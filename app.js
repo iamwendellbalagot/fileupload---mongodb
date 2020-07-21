@@ -1,3 +1,6 @@
+
+//jshint esversion:6
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -16,13 +19,16 @@ app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
 // Mongo URI
-const mongoURI = 'mongodb://brad:brad@ds257838.mlab.com:57838/mongouploads';
+const mongoURI = 'mongodb://localhost:27017/fileuploadDB';
 
 // Create mongo connection
 const conn = mongoose.createConnection(mongoURI);
 
 // Init gfs
 let gfs;
+
+
+
 
 conn.once('open', () => {
   // Init stream
@@ -78,12 +84,14 @@ app.get('/', (req, res) => {
 // @desc  Uploads file to DB
 app.post('/upload', upload.single('file'), (req, res) => {
   // res.json({ file: req.file });
+  console.log(req.file);
   res.redirect('/');
 });
 
 // @route GET /files
 // @desc  Display all files in JSON
 app.get('/files', (req, res) => {
+
   gfs.files.find().toArray((err, files) => {
     // Check if files
     if (!files || files.length === 0) {
@@ -148,6 +156,6 @@ app.delete('/files/:id', (req, res) => {
   });
 });
 
-const port = 5000;
+const port = 3000;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
